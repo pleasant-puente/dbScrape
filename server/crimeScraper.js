@@ -23,7 +23,7 @@ var crimeScraper = {
 
     //Create a new firebase instance
     var fb = new Firebase(fb_link.url);
-    
+
     request(crimeUrl+currentDateUrl, function (error, response, body) {
       if (error) { console.log('error while fetching', error); }
       if (!error && response.statusCode === 200) {
@@ -31,6 +31,7 @@ var crimeScraper = {
 
         for(var i=0; i<results.length; i++) {
           fb.child('CrimeIncident').child(results[i].incident_number).child('dateOccurred').set(results[i].date_occurred);
+          //UCR - Uniform Crime Reporting code from FBI. See server/data/crimeCodes.json for crime descriptions
           fb.child('CrimeIncident').child(results[i].incident_number).child('UCR').set(results[i].ucr);
           fb.child('CrimeIncident').child(results[i].incident_number).child('latitude').set(results[i].latitude);
           fb.child('CrimeIncident').child(results[i].incident_number).child('longitude').set(results[i].longitude);
@@ -45,6 +46,6 @@ var crimeScraper = {
       setTimeout(module.exports.requestApiCrimes, 86400000);
     });
   }
-}
+};
 
 module.exports = crimeScraper;
