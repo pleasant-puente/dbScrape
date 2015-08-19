@@ -50,6 +50,9 @@ var requestApiEvents = function() {
       for(var i=0; i<results.length; i++) {
         fb.child('MeteredParkingSpots').child(results[i].meter_id).child('mostRecentEvent').set(results[i].event_type);
         fb.child('MeteredParkingSpots').child(results[i].meter_id).child('timeStamp').set(results[i].event_time);
+        if (results[i].event_type === 'SE'){
+          fb.child('MeteredParkingSpots').child(results[i].meter_id).child('reserved').set(null);
+        }
       }  
 
       ordinalNumber = results[0].ordinal;
