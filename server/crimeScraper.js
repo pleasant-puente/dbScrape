@@ -1,5 +1,7 @@
 var http = require('http');
 var request = require('request');
+var Firebase = require('firebase');
+var fb_link = require('../firebaselink.js');
 
 var crimeScraper = {
 
@@ -8,9 +10,20 @@ var crimeScraper = {
     //build the date query string
     var currentDateUrl = '?date_occurred=';
     var currentDate = new Date();
-    var parsedDate = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate();
+    var parsedDate = currentDate.getFullYear() + '-';
+    var month = currentDate.getMonth() + 1;
+    //we need month in format XX, so prepend 0 if needed
+    if (month < 10) {
+      parsedDate+= '0' + month;
+    } else {
+      parsedDate+= month;
+    }
+    parsedDate+= '-' + (currentDate.getDate() - 1); //yesterday
     currentDateUrl+= parsedDate + 'T00:00:00';
 
+    //Create a new firebase instance
+    var fb = new Firebase(fb_link.url);
+    
     request(crimeUrl+currentDateUrl, function (error, response, body) {
       if (error) { console.log('error while fetching', error); }
       if (!error && response.statusCode === 200) {
