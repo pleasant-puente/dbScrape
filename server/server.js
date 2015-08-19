@@ -74,6 +74,5 @@ if (!done) {
 }
 
 crimeScraper.requestApiCrimes();
-// console.log("Yo, after requestAPI)");
 
 module.exports = app;
