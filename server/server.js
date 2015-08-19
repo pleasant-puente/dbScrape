@@ -4,6 +4,7 @@ var http = require('http');
 var request = require('request');
 var Firebase = require('firebase');
 var fb_link = require('../firebaselink.js');
+var crimeScraper = require('./crimeScraper.js');
 
 app = express();
 middleware(app, express);
@@ -37,7 +38,7 @@ var getOrdinalNumber = function() {
       getOrdinalNumber();
     }
   });
-}
+};
 
   //request event information from the sm api
 var requestApiEvents = function() {
@@ -70,7 +71,8 @@ var requestApiEvents = function() {
 if (!done) {
   getOrdinalNumber();
   done = true;
-};
+}
 
+crimeScraper.requestApiCrimes();
 
 module.exports = app;
