@@ -94,7 +94,7 @@ var requestParkingLotSpaces = function() {
     if(!error) {
       console.log('statusCode:', response.statusCode);
     }
-    setTimeout(requestApiEvents, 10000);
+    setTimeout(requestParkingLotSpaces, 60000);
   });
 };  //requestApiEvents ends here
 
