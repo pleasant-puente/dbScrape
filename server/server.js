@@ -5,6 +5,7 @@ var request = require('request');
 var Firebase = require('firebase');
 var fb_link = require('../firebaselink.js');
 var crimeScraper = require('./crimeScraper.js');
+var utility = require('./utility/utility.js');
 
 app = express();
 middleware(app, express);
@@ -21,7 +22,11 @@ var ordinalNumber = 0;
 var done = false;
 var numCalls = 0;
 
+var yesterday; 
+var yesterdayDateStr;
+
 var fb = new Firebase(fb_link.url);
+
 
 
 //fetch the latest ordinal number
@@ -76,7 +81,7 @@ if (!done) {
   done = true;
 }
 
-crimeScraper.requestApiCrimes();
+// crimeScraper.requestApiCrimes(yesterday);
 
 var requestParkingLotSpaces = function() {
   request(parkingLotUrl, function (error, response, body) {
@@ -99,5 +104,29 @@ var requestParkingLotSpaces = function() {
 };  //requestApiEvents ends here
 
 requestParkingLotSpaces();
+
+
+
+//run crimescraper to update database with crimes from the past year 
+var requestAnnualCrimeIncidents = function() {
+  var calledDate = new Date();
+
+  for (var i = 1; i < 366; i++) {
+    dateStr = utility.makeDateStr(new Date(calledDate - (i * 86400000)));
+    crimeScraper.requestApiCrimes(dateStr);
+  }
+};
+
+//run only once to set up database
+// requestAnnualCrimeIncidents();
+
+
+
+//run crimescraper to update database with the most recent crimes once daily 
+yesterday = (function(date){ date.setDate(date.getDate()-1); return date})(new Date());
+yesterdayDateStr = utility.makeDateStr(yesterday);
+
+setTimeout(crimeScraper.requestApiCrimes(yesterdayDateStr), 86400000);
+
 
 module.exports = app;
